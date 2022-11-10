@@ -14,6 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("CustomSettings"));
 var appSettings = builder.Configuration.GetSection("CustomSettings").Get<AppSettings>();
 
+var allOriginsPolicy = "All origins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(allOriginsPolicy, builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(
     options =>
     options.UseSqlServer(
@@ -51,6 +60,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(allOriginsPolicy);
 
 app.MapControllers();
 

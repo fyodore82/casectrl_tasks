@@ -7,7 +7,7 @@ using Tasks.Models;
 namespace Tasks.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/todo")]
     [ApiController]
     public class ToDoController : ControllerBase
     {
@@ -17,13 +17,13 @@ namespace Tasks.Controllers
             _context = context;
         }
 
-        [HttpGet(Name = "GetToDoItems")]
+        [HttpGet]
         public IList<ToDoItemDto> Get()
         {
             return _context.ToDoItems.Select(i => new ToDoItemDto(i)).ToList();
         }
 
-        [HttpPost(Name = "CreateToDoItem")]
+        [HttpPost]
         public IActionResult CreateToDoItem([FromBody] CreateToDoItemDto createToDoItemDto)
         {
             var AccountId = User.Claims.FirstOrDefault(Claim => Regex.Match(Claim.Type, "sid").Success);
@@ -46,7 +46,7 @@ namespace Tasks.Controllers
             return CreatedAtAction(nameof(CreateToDoItem), toDoItem);
         }
 
-        [HttpPut(Name = "UpdateToDoItem")]
+        [HttpPut]
         [Route("{id}")]
         public IActionResult UpdateToDoItem(int id, [FromBody] CreateToDoItemDto createToDoItemDto)
         {
@@ -66,7 +66,7 @@ namespace Tasks.Controllers
             return Ok(new ToDoItemDto(toDoItem));
         }
 
-        [HttpDelete(Name = "DeleteToDoItem")]
+        [HttpDelete]
         [Route("{id}")]
         public IActionResult DeleteToDoItem(int id)
         {
@@ -74,6 +74,7 @@ namespace Tasks.Controllers
             if (toDoItem == null) return NotFound();
 
             _context.Remove(toDoItem);
+            _context.SaveChanges();
             return Ok();
         }
 
