@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using RabbitMQ.Client;
+using Tasks.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,7 @@ builder.Services.AddDbContext<AppDbContext>(
     options.UseSqlServer(
             appSettings.DatabaseConnection,
             x => x.MigrationsAssembly("Tasks.Domain")));
+builder.Services.AddTransient<IToDoRepository, ToDoRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -41,6 +44,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Jwt.Key))
     };
 });
+
+builder.Services.AddSingleton(new ConnectionFactory() { Uri = new Uri(appSettings.RabbitMq.Connection) });
+builder.Services.AddTransient<IRabbitMqClient, RabbitMqClient>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

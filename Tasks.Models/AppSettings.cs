@@ -14,6 +14,15 @@ namespace Tasks.Models
         }
         public string? DatabaseConnection { get; set; }
         public Jwt Jwt { get; set; }
+
+        public RabbitMq RabbitMq { get; set; }
+    }
+
+    public class RabbitMq
+    {
+        public string? Connection { get; set; }
+        public string? Exchange { get; set; }
+        public string? Query { get; set; }
     }
 
     public class Jwt

@@ -6,8 +6,8 @@
         {
             Id = toDoItem.Id;
             AccountId = toDoItem.AccountId;
-            CreatedAt = DateTime.SpecifyKind(toDoItem.CreatedAt, DateTimeKind.Utc);
-            ModifedOn = toDoItem.ModifedOn != null ? DateTime.SpecifyKind((DateTime)toDoItem.ModifedOn, DateTimeKind.Utc) : null;
+            CreatedAt = toDoItem.CreatedAt;
+            ModifedOn = toDoItem.ModifedOn;
             CreatedBy = toDoItem.CreatedBy;
             ModifiedBy = toDoItem.ModifiedBy;
         }
